@@ -1,0 +1,12 @@
+{
+    "name": "star-garter-fullstack",
+    "version": "1.0.0",
+    "description": "Fullstack deployment configuration for Star and Garter",
+    "scripts": {
+        "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+        "build": "cd frontend && npm install && npm run build",
+        "start": "cd backend && npm install && node server.js"
+    },
+    "author": "Samrat Biswas",
+    "license": "ISC"
+}

@@ -85,6 +85,21 @@ app.get(`${API_PREFIX}/health`, (req, res) => {
 });
 
 // ============================================
+// Production Settings
+// ============================================
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the frontend build folder
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  // Any routes not handled by API should serve the index.html from build
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith(API_PREFIX)) {
+      res.sendFile(path.resolve(__dirname, '../frontend', 'build', 'index.html'));
+    }
+  });
+}
+
+// ============================================
 // Error Handling
 // ============================================
 // 404 handler

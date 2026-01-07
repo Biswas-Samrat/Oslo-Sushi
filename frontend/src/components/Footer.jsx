@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram } from 'lucide-react';
 import { Helmet } from 'react-helmet';
+import { useLanguage } from '../context/LanguageContext';
 
 const Footer = () => {
+    const { t } = useLanguage();
     const currentYear = new Date().getFullYear();
 
     return (
@@ -14,39 +16,34 @@ const Footer = () => {
                     {JSON.stringify({
                         '@context': 'https://schema.org',
                         '@type': 'Restaurant',
-                        name: 'Star and Garter Oamaru',
+                        name: 'Restaurante Japonés Oslo Sushi',
                         image: 'https://yourdomain.com/restaurant-image.jpg',
-                        '@id': 'https://yourdomain.com',
-                        url: 'https://yourdomain.com',
-                        telephone: '+64-3-434-xxxx',
-                        priceRange: '$20-$40',
+                        '@id': 'https://esrest.es',
+                        url: 'https://esrest.es',
+                        telephone: '+34 672 59 96 63',
+                        priceRange: '€20–30',
                         address: {
                             '@type': 'PostalAddress',
-                            streetAddress: 'Ground Floor/9 Itchen Street',
-                            addressLocality: 'Oamaru',
-                            postalCode: '9400',
-                            addressCountry: 'NZ'
+                            streetAddress: 'C. Evaristo Valle, 4',
+                            addressLocality: 'Gijón',
+                            addressRegion: 'Asturias',
+                            postalCode: '33202',
+                            addressCountry: 'ES'
                         },
                         geo: {
                             '@type': 'GeoCoordinates',
-                            latitude: -45.0976,
-                            longitude: 170.9703
+                            latitude: 43.5398,
+                            longitude: -5.6554
                         },
                         openingHoursSpecification: [
                             {
                                 '@type': 'OpeningHoursSpecification',
-                                dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday'],
-                                opens: '17:30',
-                                closes: '21:00'
-                            },
-                            {
-                                '@type': 'OpeningHoursSpecification',
-                                dayOfWeek: ['Friday', 'Saturday'],
-                                opens: '17:30',
-                                closes: '22:00'
+                                dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                                opens: '20:00',
+                                closes: '23:30'
                             }
                         ],
-                        servesCuisine: 'Fine Dining',
+                        servesCuisine: 'Japanese',
                         acceptsReservations: 'True'
                     })}
                 </script>
@@ -57,39 +54,37 @@ const Footer = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {/* About Section */}
                         <div>
-                            <h3 className="text-xl font-serif font-bold mb-4">Star & Garter</h3>
+                            <h3 className="text-xl font-serif font-bold mb-4">Oslo Sushi</h3>
                             <p className="text-gray-400 mb-4">
-                                Fine dining in the heart of Oamaru, New Zealand. Experience exquisite cuisine
-                                crafted with local ingredients.
+                                {t('osloSushiDescription')}
                             </p>
                         </div>
 
                         {/* Contact Information */}
                         <div>
-                            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
+                            <h4 className="text-lg font-semibold mb-4">{t('contactUs')}</h4>
                             <div className="space-y-3 text-gray-400">
                                 <div className="flex items-start space-x-3">
                                     <MapPin size={20} className="text-primary-400 flex-shrink-0 mt-1" />
-                                    <span>Ground Floor/9 Itchen Street<br />Oamaru 9400, New Zealand</span>
+                                    <span>C. Evaristo Valle, 4<br />33202 Gijón, Asturias, Spain</span>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <Phone size={20} className="text-primary-400 flex-shrink-0" />
-                                    <span>+64 3 434 xxxx</span>
+                                    <span>+34 672 59 96 63</span>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <Mail size={20} className="text-primary-400 flex-shrink-0" />
-                                    <span>info@starandgarter.co.nz</span>
+                                    <span>info@esrest.es</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Opening Hours & Social */}
                         <div>
-                            <h4 className="text-lg font-semibold mb-4">Opening Hours</h4>
+                            <h4 className="text-lg font-semibold mb-4">{t('openingHours')}</h4>
                             <div className="text-gray-400 space-y-2 mb-6">
-                                <p><strong>Tue - Thu:</strong> 5:30 PM - 9:00 PM</p>
-                                <p><strong>Fri - Sat:</strong> 5:30 PM - 10:00 PM</p>
-                                <p><strong>Sun - Mon:</strong> Closed</p>
+                                <p><strong>{t('everyDay')}</strong> {t('opensAt')}</p>
+                                <p><strong>{t('deliveryTakeout')}</strong> {t('available')}</p>
                             </div>
 
                             <div className="flex space-x-4">
@@ -119,17 +114,17 @@ const Footer = () => {
                     <div className="mt-8 pt-8 border-t border-gray-800">
                         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                             <p className="text-gray-400 text-sm">
-                                © {currentYear} Star and Garter Oamaru. All rights reserved.
+                                © {currentYear} {t('rightsReserved')}
                             </p>
                             <div className="flex space-x-6 text-sm text-gray-400">
                                 <Link to="/menu" className="hover:text-primary-400 transition-colors">
-                                    Menu
+                                    {t('menu')}
                                 </Link>
                                 <Link to="/booking" className="hover:text-primary-400 transition-colors">
-                                    Reservations
+                                    {t('reservations')}
                                 </Link>
                                 <Link to="/contact" className="hover:text-primary-400 transition-colors">
-                                    Contact
+                                    {t('contact')}
                                 </Link>
                             </div>
                         </div>

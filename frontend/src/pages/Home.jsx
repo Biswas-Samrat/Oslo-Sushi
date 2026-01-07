@@ -1,13 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { Calendar, Clock, Star, Users } from 'lucide-react';
+import { Calendar, Clock, Star, Users, Heart, ShoppingBag, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/client';
+import { useLanguage } from '../context/LanguageContext';
+
+
+const CUSTOMER_REVIEWS = [
+    { name: "Lucia d'Aubarede", rating: 5, text: "The menu deals were very good value but the algae salad was a bit tough." },
+    { name: "dkl", rating: 5, text: "This is a warm and quiet place with good veganized sushi and very nice music." },
+    { name: "Miguel Farias", rating: 5, text: "High quality sushi and one of the few places in Gijón with great vegan options." },
+    { name: "Sabores escondidos", rating: 5, text: "Unfortunately the dishes did not live up to expectations despite the restaurant's very good reputation." },
+    { name: "miguel cotrina", rating: 5, text: "This place deserves a review because the delicious sushi uses the highest quality fresh ingredients." },
+    { name: "Isabel Aramburu Valle", rating: 5, text: "This is my favorite sushi in Gijón because every exquisite bite tastes just like butter." },
+    { name: "Yeraldinne", rating: 5, text: "The portions are just right and the food presentation is truly incredible and photo worthy." },
+    { name: "Laura", rating: 5, text: "The atmosphere is comfortable and the waitress was very helpful while offering her lovely recommendations." },
+    { name: "tanya san millan", rating: 5, text: "The butterfish tartar is delicious and the salmon geishas are highly recommended for every visitor." },
+    { name: "Señorita Valle", rating: 5, text: "The restaurant is small but there is plenty of space between the well placed tables." },
+    { name: "Piti Melchor", rating: 5, text: "Every dish has a special unique touch at the best sushi restaurant I have tried." },
+    { name: "Zareth Rivera", rating: 5, text: "Excellent quality food and delicious desserts make this a highly recommended place for varied sushi." },
+    { name: "Mónica C. Suárez", rating: 5, text: "They have a generous daily menu and the staff adapted our sushi for food allergies." },
+    { name: "Nuria", rating: 5, text: "We found this cozy place by chance and it was our best Japanese food experience." },
+    { name: "Masa Fritadepollo", rating: 5, text: "The price was fair for the quality and I especially recommend trying the bao buns." },
+    { name: "Nagore", rating: 5, text: "We were absolutely blown away by the original high quality sushi and the exquisite tartare." },
+    { name: "Juan Pablo Cifuentes", rating: 5, text: "The staff was very friendly and the service was impeccable for our group of four." },
+    { name: "ivan machado", rating: 5, text: "I did not expect such high quality food and the carrot cake had delicious cinnamon." },
+    { name: "Lorelai Seaborn", rating: 5, text: "This cozy place has very friendly staff and offers great value for the tasty food." },
+    { name: "Ene RJ", rating: 5, text: "The service from the ladies was unbeatable and the breaded salmon sushi was excellent quality." },
+    { name: "Raquel B.A", rating: 5, text: "They prepared a successful sushi table for our wedding guests with such great professional care." },
+    { name: "Ana Seitz González", rating: 5, text: "We liked the butterfish tartar and the premium combo although some dishes took long preparation." },
+    { name: "Zenaida Tasis", rating: 5, text: "The dishes have spectacular presentation and the quality price ratio is truly incredible for everyone." },
+    { name: "Rocío Álvarez Prieto", rating: 5, text: "Three of us left very full after eating the delicious and unique butterfish tartar dish." },
+    { name: "Hugo Huerta", rating: 5, text: "This is rightfully one of the top three sushi restaurants in the entire Asturias region." },
+    { name: "Belén Collado", rating: 5, text: "Everything was delicious and the excellent service makes this a wonderful place to eat sushi." }
+];
 
 const Home = () => {
+    const { t } = useLanguage();
     const [specials, setSpecials] = useState([]);
     const [currentSpecialIndex, setCurrentSpecialIndex] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+
+    // Auto-rotate reviews
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentReviewIndex((prev) => (prev + 1) % CUSTOMER_REVIEWS.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const nextReview = () => {
+        setCurrentReviewIndex((prev) => (prev + 1) % CUSTOMER_REVIEWS.length);
+    };
+
+    const prevReview = () => {
+        setCurrentReviewIndex((prev) => (prev - 1 + CUSTOMER_REVIEWS.length) % CUSTOMER_REVIEWS.length);
+    };
+
+    const getVisibleReviews = () => {
+        const reviews = [];
+        for (let i = 0; i < 4; i++) {
+            const index = (currentReviewIndex + i) % CUSTOMER_REVIEWS.length;
+            reviews.push({ ...CUSTOMER_REVIEWS[index], id: index });
+        }
+        return reviews;
+    };
 
     useEffect(() => {
         fetchActiveSpecials();
@@ -37,17 +96,11 @@ const Home = () => {
     return (
         <>
             <Helmet>
-                <title>Star and Garter Oamaru - Fine Dining Restaurant in Oamaru, NZ</title>
+                <title>Oslo Sushi - Authentic Japanese Restaurant in Gijón</title>
                 <meta
                     name="description"
-                    content="Experience exceptional fine dining at Star and Garter Oamaru. Explore our seasonal menu, daily specials, and book your table today."
+                    content="Experience exceptional Japanese dining at Oslo Sushi Gijón. Authentic sushi, fresh ingredients, and a warm atmosphere. Order online or book a table."
                 />
-                <meta property="og:title" content="Star and Garter Oamaru - Fine Dining Restaurant" />
-                <meta
-                    property="og:description"
-                    content="Experience exceptional fine dining in Oamaru, New Zealand."
-                />
-                <meta property="og:type" content="restaurant" />
             </Helmet>
 
             {/* Hero Section */}
@@ -64,91 +117,85 @@ const Home = () => {
 
                 <div className="section-container relative z-10 text-center">
                     <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-6 animate-fade-in drop-shadow-lg">
-                        Welcome to Star & Garter
+                        {t('heroTitle')}
                     </h1>
                     <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90 animate-slide-up drop-shadow-md">
-                        Fine dining in the heart of Oamaru, New Zealand
+                        {t('heroSubtitle')}
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
                         <Link to="/booking" className="btn-primary bg-white text-primary-600 hover:bg-gray-100 shadow-lg">
-                            Book a Table
+                            {t('booking')}
+                        </Link>
+                        <Link to="/order-online" className="btn-primary bg-primary-600 text-white border-none hover:bg-primary-700 shadow-lg">
+                            {t('orderOnline')}
                         </Link>
                         <Link to="/menu" className="btn-outline border-white text-white hover:bg-white/10 shadow-lg">
-                            View Menu
+                            {t('viewMenu')}
                         </Link>
                     </div>
                 </div>
             </section>
 
             {/* Customer Reviews Section */}
-            <section className="section-container">
+            <section className="section-container overflow-hidden">
                 <div className="text-center mb-12">
-                    <h2 className="text-4xl font-serif font-bold mb-4">What Our Customers Say</h2>
-                    <p className="text-gray-600 text-lg">Hear from those who've experienced our hospitality</p>
+                    <h2 className="text-4xl font-serif font-bold mb-4">{t('whatOurCustomersSay')}</h2>
+                    <p className="text-gray-600 text-lg">{t('customerReviewsSubtitle')}</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Review 1 */}
-                    <div className="card p-6">
-                        <div className="flex items-center mb-4">
-                            {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={18} className="text-yellow-400" fill="currentColor" />
-                            ))}
-                        </div>
-                        <p className="text-gray-700 mb-4 italic text-sm">
-                            "Absolutely amazing experience! The Blue Cod was perfectly cooked and the service was impeccable."
-                        </p>
-                        <p className="font-semibold text-gray-900 text-sm">Sarah Mitchell</p>
-                        <p className="text-xs text-gray-500">December 2025</p>
+                <div className="max-w-7xl mx-auto">
+                    <div className="relative h-[280px]"> {/* Set fixed height for container */}
+                        <AnimatePresence mode='popLayout'>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 absolute w-full">
+                                {getVisibleReviews().map((review) => (
+                                    <motion.div
+                                        key={review.id}
+                                        layout
+                                        initial={{ opacity: 0, x: 50 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -50 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="card p-6 flex flex-col h-full bg-white shadow-md hover:shadow-lg transition-shadow"
+                                    >
+                                        <div className="flex items-center mb-4">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} size={18} className="text-yellow-400" fill="currentColor" />
+                                            ))}
+                                        </div>
+                                        <p className="text-gray-700 mb-4 italic text-sm flex-grow line-clamp-4">
+                                            "{review.text}"
+                                        </p>
+                                        <div>
+                                            <p className="font-semibold text-gray-900 text-sm">{review.name}</p>
+                                            <p className="text-xs text-gray-500">{t('verifiedCustomer')}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </AnimatePresence>
                     </div>
 
-                    {/* Review 2 */}
-                    <div className="card p-6">
-                        <div className="flex items-center mb-4">
-                            {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={18} className="text-yellow-400" fill="currentColor" />
-                            ))}
+                    <div className="flex flex-col items-center gap-6 mt-8">
+                        <div className="flex gap-4">
+                            <button
+                                onClick={prevReview}
+                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                aria-label="Previous reviews"
+                            >
+                                <ChevronLeft size={24} className="text-gray-700" />
+                            </button>
+                            <button
+                                onClick={nextReview}
+                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                aria-label="Next reviews"
+                            >
+                                <ChevronRight size={24} className="text-gray-700" />
+                            </button>
                         </div>
-                        <p className="text-gray-700 mb-4 italic text-sm">
-                            "The Ribeye Steak was cooked to perfection! Beautiful atmosphere and wonderful staff."
-                        </p>
-                        <p className="font-semibold text-gray-900 text-sm">James Peterson</p>
-                        <p className="text-xs text-gray-500">December 2025</p>
+                        <Link to="/contact" className="btn-outline inline-block">
+                            {t('leaveReview')}
+                        </Link>
                     </div>
-
-                    {/* Review 3 */}
-                    <div className="card p-6">
-                        <div className="flex items-center mb-4">
-                            {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={18} className="text-yellow-400" fill="currentColor" />
-                            ))}
-                        </div>
-                        <p className="text-gray-700 mb-4 italic text-sm">
-                            "Our family had a lovely evening here. The kids menu is great and the adults menu is phenomenal!"
-                        </p>
-                        <p className="font-semibold text-gray-900 text-sm">Emma Thompson</p>
-                        <p className="text-xs text-gray-500">November 2025</p>
-                    </div>
-
-                    {/* Review 4 */}
-                    <div className="card p-6">
-                        <div className="flex items-center mb-4">
-                            {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={18} className="text-yellow-400" fill="currentColor" />
-                            ))}
-                        </div>
-                        <p className="text-gray-700 mb-4 italic text-sm">
-                            "The Lamb Shank was incredible! Tender, flavorful, and beautifully presented."
-                        </p>
-                        <p className="font-semibold text-gray-900 text-sm">Michael Chen</p>
-                        <p className="text-xs text-gray-500">November 2025</p>
-                    </div>
-                </div>
-
-                <div className="text-center mt-8">
-                    <Link to="/contact" className="btn-outline inline-block">
-                        Leave a Review
-                    </Link>
                 </div>
             </section>
 
@@ -156,8 +203,8 @@ const Home = () => {
             {!loading && specials.length > 0 && (
                 <section className="section-container">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-serif font-bold mb-4">Today's Special</h2>
-                        <p className="text-gray-600 text-lg">Fresh seasonal dishes crafted daily</p>
+                        <h2 className="text-4xl font-serif font-bold mb-4">{t('todaysSpecial')}</h2>
+                        <p className="text-gray-600 text-lg">{t('todaysSpecialSubtitle')}</p>
                     </div>
 
                     <div className="max-w-4xl mx-auto">
@@ -193,39 +240,68 @@ const Home = () => {
             )}
 
             {/* Features Section */}
-            <section className="bg-gray-100 py-16">
+            <section className="bg-gray-100 py-4">
                 <div className="section-container">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="text-center">
                             <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Calendar className="text-primary-600" size={32} />
+                                <Heart className="text-primary-600" size={32} />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">Daily Specials</h3>
-                            <p className="text-gray-600">Fresh seasonal dishes every day</p>
+                            <h3 className="text-xl font-semibold mb-2">{t('lgbtqFriendly')}</h3>
+                            <p className="text-gray-600">{t('inclusive')}</p>
                         </div>
 
                         <div className="text-center">
                             <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Star className="text-primary-600" size={32} />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">Local Favorites</h3>
-                            <p className="text-gray-600">Featuring Oamaru's best dishes</p>
+                            <h3 className="text-xl font-semibold mb-2">{t('topRated')}</h3>
+                            <p className="text-gray-600">{t('topRatedSubtitle')}</p>
                         </div>
 
                         <div className="text-center">
                             <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <Users className="text-primary-600" size={32} />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">Easy Booking</h3>
-                            <p className="text-gray-600">Reserve your table online</p>
+                            <h3 className="text-xl font-semibold mb-2">{t('easyBooking')}</h3>
+                            <p className="text-gray-600">{t('easyBookingSubtitle')}</p>
                         </div>
 
                         <div className="text-center">
                             <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Clock className="text-primary-600" size={32} />
+                                <ShoppingBag className="text-primary-600" size={32} />
                             </div>
-                            <h3 className="text-xl font-semibold mb-2">Flexible Hours</h3>
-                            <p className="text-gray-600">Open Tue-Sat evenings</p>
+                            <h3 className="text-xl font-semibold mb-2">{t('orderOnline')}</h3>
+                            <p className="text-gray-600">{t('orderOnlineSubtitle')}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Why Us Section */}
+            <section className="section-container py-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div className="order-2 md:order-1">
+                        <img
+                            src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=1470&auto=format&fit=crop"
+                            alt="Fresh Sushi Platter"
+                            className="rounded-lg shadow-xl w-full h-[500px] object-cover hover:scale-[1.02] transition-transform duration-300"
+                        />
+                    </div>
+                    <div className="order-1 md:order-2">
+                        <h2 className="text-4xl font-serif font-bold mb-6 text-gray-900">{t('whyUs')}</h2>
+                        <h3 className="text-2xl text-primary-600 font-semibold mb-6">{t('sushiArtExperience')}</h3>
+
+                        <div className="space-y-6 text-gray-600 text-lg">
+                            <p>
+                                {t('whyUsP1')}
+                            </p>
+                            <p>
+                                {t('whyUsP2')}
+                            </p>
+                            <p>
+                                {t('whyUsP3')}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -233,12 +309,12 @@ const Home = () => {
 
             {/* CTA Section */}
             <section className="section-container text-center">
-                <h2 className="text-4xl font-serif font-bold mb-6">Ready to Dine With Us?</h2>
+                <h2 className="text-4xl font-serif font-bold mb-6">{t('readyToDine')}</h2>
                 <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Book your table today and experience the finest dining in Oamaru
+                    {t('bookTableToday')}
                 </p>
                 <Link to="/booking" className="btn-primary inline-block">
-                    Reserve Your Table
+                    {t('reserveYourTable')}
                 </Link>
             </section>
         </>

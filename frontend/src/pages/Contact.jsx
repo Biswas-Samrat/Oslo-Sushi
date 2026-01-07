@@ -3,8 +3,10 @@ import { Helmet } from 'react-helmet';
 import { MapPin, Phone, Mail, Star } from 'lucide-react';
 import { toast } from 'react-toastify';
 import api from '../api/client';
+import { useLanguage } from '../context/LanguageContext';
 
 const Contact = () => {
+    const { t } = useLanguage();
     const [reviewForm, setReviewForm] = useState({
         name: '',
         email: '',
@@ -29,7 +31,7 @@ const Contact = () => {
             const response = await api.post('/reviews', reviewForm);
 
             if (response.data.success) {
-                toast.success('Thank you for your review! It has been submitted successfully.');
+                toast.success('Thank you for your review! It has been submitted successfully.'); // Toast messages can be added to translations later if needed
                 // Reset form
                 setReviewForm({
                     name: '',
@@ -49,38 +51,28 @@ const Contact = () => {
     return (
         <>
             <Helmet>
-                <title>Contact Us - Star and Garter Oamaru</title>
+                <title>{t('contactUs')} - Oslo Sushi Gijón</title>
                 <meta
                     name="description"
-                    content="Contact Star and Garter Oamaru. Visit us at 9 Itchen Street, Oamaru or call us for reservations and inquiries."
+                    content="Contact Restaurante Japonés Oslo Sushi. Visit us at C. Evaristo Valle, 4, Gijón or call us for reservations and inquiries."
                 />
             </Helmet>
-
-            {/* Hero Section */}
-            <section className="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-16">
-                <div className="section-container text-center">
-                    <h1 className="text-5xl font-serif font-bold mb-4">Contact Us</h1>
-                    <p className="text-xl text-blue-50 max-w-2xl mx-auto">
-                        We'd love to hear from you
-                    </p>
-                </div>
-            </section>
 
             <div className="section-container">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Contact Info */}
                     <div>
-                        <h2 className="text-3xl font-serif font-bold mb-8">Get in Touch</h2>
+                        <h2 className="text-3xl font-serif font-bold mb-8">{t('getInTouch')}</h2>
 
                         <div className="space-y-6 mb-12">
                             <div className="card p-6">
                                 <div className="flex items-start space-x-4">
                                     <MapPin className="text-primary-600 flex-shrink-0 mt-1" size={24} />
                                     <div>
-                                        <h3 className="font-semibold text-lg mb-2">Address</h3>
+                                        <h3 className="font-semibold text-lg mb-2">{t('address')}</h3>
                                         <p className="text-gray-600">
-                                            Ground Floor/9 Itchen Street<br />
-                                            Oamaru 9400, New Zealand
+                                            C. Evaristo Valle, 4<br />
+                                            33202 Gijón, Asturias, Spain
                                         </p>
                                     </div>
                                 </div>
@@ -90,8 +82,8 @@ const Contact = () => {
                                 <div className="flex items-start space-x-4">
                                     <Phone className="text-primary-600 flex-shrink-0 mt-1" size={24} />
                                     <div>
-                                        <h3 className="font-semibold text-lg mb-2">Phone</h3>
-                                        <p className="text-gray-600">+64 3 434 xxxx</p>
+                                        <h3 className="font-semibold text-lg mb-2">{t('phone')}</h3>
+                                        <p className="text-gray-600">+34 672 59 96 63</p>
                                         <p className="text-sm text-gray-500 mt-1">Call for reservations</p>
                                     </div>
                                 </div>
@@ -101,8 +93,8 @@ const Contact = () => {
                                 <div className="flex items-start space-x-4">
                                     <Mail className="text-primary-600 flex-shrink-0 mt-1" size={24} />
                                     <div>
-                                        <h3 className="font-semibold text-lg mb-2">Email</h3>
-                                        <p className="text-gray-600">info@starandgarter.co.nz</p>
+                                        <h3 className="font-semibold text-lg mb-2">{t('email')}</h3>
+                                        <p className="text-gray-600">info@esrest.es</p>
                                     </div>
                                 </div>
                             </div>
@@ -110,19 +102,14 @@ const Contact = () => {
 
                         {/* Opening Hours */}
                         <div className="card p-6">
-                            <h3 className="text-2xl font-semibold mb-4">Opening Hours</h3>
+                            <h3 className="text-2xl font-semibold mb-4">{t('openingHours')}</h3>
                             <div className="space-y-2 text-gray-700">
                                 <div className="flex justify-between">
-                                    <span>Tuesday - Thursday</span>
-                                    <span className="font-medium">5:30 PM - 9:00 PM</span>
+                                    <span>{t('mondaySunday')}</span>
+                                    <span className="font-medium">{t('opensAt')} - Close</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span>Friday - Saturday</span>
-                                    <span className="font-medium">5:30 PM - 10:00 PM</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Sunday - Monday</span>
-                                    <span className="text-red-600">Closed</span>
+                                    <span className="text-sm text-gray-500 italic">Epiphany might affect these hours</span>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +117,7 @@ const Contact = () => {
 
                     {/* Review Form */}
                     <div>
-                        <h2 className="text-3xl font-serif font-bold mb-8">Leave a Review</h2>
+                        <h2 className="text-3xl font-serif font-bold mb-8">{t('leaveReview')}</h2>
 
                         <div className="card p-8">
                             <p className="text-gray-600 mb-6">
@@ -141,7 +128,7 @@ const Contact = () => {
                                 {/* Name */}
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Your Name *
+                                        {t('yourName')} *
                                     </label>
                                     <input
                                         type="text"
@@ -158,7 +145,7 @@ const Contact = () => {
                                 {/* Email */}
                                 <div>
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Email (Optional)
+                                        {t('yourEmail')} (Optional)
                                     </label>
                                     <input
                                         type="email"
@@ -237,7 +224,7 @@ const Contact = () => {
                                     ) : (
                                         <>
                                             <Star size={20} />
-                                            <span>Submit Review</span>
+                                            <span>{t('submit')}</span>
                                         </>
                                     )}
                                 </button>
@@ -248,17 +235,17 @@ const Contact = () => {
 
                 {/* Map */}
                 <div className="mt-12">
-                    <h2 className="text-3xl font-serif font-bold mb-8 text-center">Find Us</h2>
+                    <h2 className="text-3xl font-serif font-bold mb-8 text-center">{t('location')}</h2>
                     <div className="card overflow-hidden">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2935.419!2d170.9703!3d-45.0976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDXCsDA1JzUxLjQiUyAxNzDCsDU4JzEzLjEiRQ!5e0!3m2!1sen!2snz!4v1234567890"
+                            src="https://maps.google.com/maps?q=C.+Evaristo+Valle,+4,+33202+Gijón&z=15&output=embed"
                             width="100%"
                             height="450"
                             style={{ border: 0 }}
                             allowFullScreen=""
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Star and Garter Oamaru Location"
+                            title="Oslo Sushi Location"
                         ></iframe>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { UtensilsCrossed, Star, Tag } from 'lucide-react';
 import api from '../api/client';
@@ -133,12 +133,33 @@ const Menu = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+    const lastScrollY = useRef(0);
 
     // Extract categories from data
     const categories = ['All', ...new Set(FALLBACK_MENU_ITEMS.map(item => item.category))];
 
     useEffect(() => {
         fetchMenuItems();
+
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+
+            // Should be hidden if scrolling down AND we've scrolled past the header height (e.g. 100px)
+            if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+                setIsNavbarVisible(false);
+            } else {
+                setIsNavbarVisible(true);
+            }
+
+            lastScrollY.current = currentScrollY;
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     const fetchMenuItems = async () => {
@@ -176,20 +197,28 @@ const Menu = () => {
             </Helmet>
 
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-primary-600 to-primary-500 text-white ">
-                <div className="section-container text-center">
+            <section
+                className="relative bg-gray-900 text-white h-[300px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url(${process.env.PUBLIC_URL}/menu-hero.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            >
+                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="section-container text-center relative z-10">
                     <div className="flex justify-center mb-4">
-                        <UtensilsCrossed size={48} />
+                        <UtensilsCrossed size={48} className="text-secondary-400" />
                     </div>
-                    <h1 className="text-5xl font-serif font-bold mb-4">Our Menu</h1>
-                    <p className="text-xl text-primary-50 max-w-2xl mx-auto">
+                    <h1 className="text-5xl font-serif font-bold mb-4">Our Delicious Menu</h1>
+                    <p className="text-xl text-gray-100 max-w-2xl mx-auto">
                         Crafted with passion using the finest local ingredients
                     </p>
                 </div>
             </section>
 
             {/* Category Filter */}
-            <div className="bg-white shadow-md sticky top-20 z-40 overflow-x-auto">
+            <div className={`bg-white shadow-md sticky z-40 overflow-x-auto transition-all duration-300 ${isNavbarVisible ? 'top-20' : 'top-0'}`}>
                 <div className="section-container py-4">
                     <div className="flex gap-3 justify-start md:justify-center min-w-max px-4">
                         {categories.map((category) => (

@@ -5,6 +5,7 @@ import { Calendar, Clock, Star, Users, Heart, ShoppingBag, ChevronLeft, ChevronR
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/client';
 import { useLanguage } from '../context/LanguageContext';
+import FeaturedProducts from '../components/FeaturedProducts';
 
 
 const CUSTOMER_REVIEWS = [
@@ -135,6 +136,9 @@ const Home = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Featured Products Section */}
+            <FeaturedProducts />
 
             {/* Customer Reviews Section */}
             <section className="section-container overflow-hidden">

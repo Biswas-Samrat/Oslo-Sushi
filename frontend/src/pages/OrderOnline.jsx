@@ -27,10 +27,19 @@ const OrderOnline = () => {
             </Helmet>
 
             {/* Header/Hero */}
-            <section className="bg-gray-900 text-white py-6">
-                <div className="section-container text-center">
+
+            <section
+                className="relative bg-gray-900 text-white h-[300px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url(${process.env.PUBLIC_URL}/order_online_hero.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            >
+                <div className="absolute inset-0 bg-black/50"></div>
+                <div className="section-container text-center relative z-10">
                     <h1 className="text-4xl font-serif font-bold mb-4">{t('orderOnlineTitle')}</h1>
-                    <p className="text-gray-300">{t('orderOnlineHeroSubtitle')}</p>
+                    <p className="text-gray-100 text-lg">{t('orderOnlineHeroSubtitle')}</p>
                 </div>
             </section>
 

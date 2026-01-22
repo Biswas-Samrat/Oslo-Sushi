@@ -13,8 +13,41 @@ const createBooking = async (req, res) => {
             data: booking
         });
 
-        // TODO: Send confirmation email here (optional)
-        // sendBookingConfirmation(booking);
+        // Send WhatsApp Notification via Twilio
+        try {
+            const accountSid = process.env.TWILIO_ACCOUNT_SID;
+            const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+            if (accountSid && authToken) {
+                const client = require('twilio')(accountSid, authToken);
+
+                // Format the message
+                const messageBody = `*New Table Booking!*
+
+-----------------
+*Name:* ${booking.name}
+*Phone:* ${booking.phone}
+*Date:* ${new Date(booking.date).toLocaleDateString()}
+*Time:* ${booking.time}
+*Guests:* ${booking.partySize}
+*Email:* ${booking.email || 'N/A'}
+*Special Requests:* ${booking.specialRequests || 'None'}`;
+
+                await client.messages.create({
+                    from: 'whatsapp:+14155238886', // Twilio Sandbox Number
+                    to: 'whatsapp:+8801882746498',  // Admin Number
+                    body: messageBody
+                });
+
+                console.log('WhatsApp notification sent successfully');
+            } else {
+                console.log('Twilio credentials missing - skipping WhatsApp notification');
+                console.log('Would have sent:', booking);
+            }
+        } catch (twilioError) {
+            console.error('Failed to send WhatsApp notification:', twilioError.message);
+            // Don't fail the request if notification fails, just log it
+        }
 
     } catch (error) {
         res.status(400).json({

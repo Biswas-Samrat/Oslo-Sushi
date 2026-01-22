@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
+import { Menu, X, Globe, ShoppingCart } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +11,7 @@ const Header = () => {
     const lastScrollY = useRef(0);
     const location = useLocation();
     const { language, setLanguage, t } = useLanguage();
+    const { getCartCount, toggleCart } = useCart();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -107,10 +109,38 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Cart Icon (Desktop) */}
+                        <button
+                            onClick={toggleCart}
+                            className="relative text-gray-700 hover:text-primary-600 focus:outline-none ml-4"
+                            aria-label="Open cart"
+                        >
+                            <ShoppingCart size={24} />
+                            {getCartCount() > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                                    {getCartCount()}
+                                </span>
+                            )}
+                        </button>
                     </div>
 
                     {/* Mobile Controls */}
                     <div className="flex md:hidden items-center space-x-4">
+                        {/* Cart Icon (Mobile) */}
+                        <button
+                            onClick={toggleCart}
+                            className="relative text-gray-700 p-2"
+                            aria-label="Open cart"
+                        >
+                            <ShoppingCart size={24} />
+                            {getCartCount() > 0 && (
+                                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                    {getCartCount()}
+                                </span>
+                            )}
+                        </button>
+
                         {/* Mobile Language Button */}
                         <button
                             onClick={() => {

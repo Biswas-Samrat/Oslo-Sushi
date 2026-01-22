@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, UtensilsCrossed, Sparkles, Calendar, LogOut } from 'lucide-react';
+import { Home, UtensilsCrossed, Calendar, LogOut } from 'lucide-react';
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -14,7 +14,6 @@ const AdminDashboard = () => {
 
     const menuItems = [
         { icon: UtensilsCrossed, title: 'Menu Manager', description: 'Add, edit, and delete menu items', path: '/admin/menu', color: 'bg-blue-500' },
-        { icon: Sparkles, title: 'Daily Specials', description: 'Manage daily specials and schedules', path: '/admin/specials', color: 'bg-purple-500' },
         { icon: Calendar, title: 'Bookings & Reviews', description: 'View bookings and moderate reviews', path: '/admin/bookings-reviews', color: 'bg-green-500' },
     ];
 
@@ -61,14 +60,10 @@ const AdminDashboard = () => {
                 </div>
 
                 {/* Quick Stats */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="card p-6">
                         <p className="text-gray-600 mb-1">Total Menu Items</p>
                         <p className="text-3xl font-bold text-primary-600">-</p>
-                    </div>
-                    <div className="card p-6">
-                        <p className="text-gray-600 mb-1">Active Specials</p>
-                        <p className="text-3xl font-bold text-purple-600">-</p>
                     </div>
                     <div className="card p-6">
                         <p className="text-gray-600 mb-1">Pending Bookings</p>

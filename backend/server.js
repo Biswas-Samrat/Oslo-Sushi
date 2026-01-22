@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // Loaded env
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -13,6 +13,7 @@ const specialsRoutes = require('./routes/specialsRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 // Import utilities
 const { expireSpecials } = require('./utils/cronJobs');
@@ -73,6 +74,7 @@ app.use(`${API_PREFIX}/specials`, specialsRoutes);
 app.use(`${API_PREFIX}/bookings`, bookingRoutes);
 app.use(`${API_PREFIX}/reviews`, reviewRoutes);
 app.use(`${API_PREFIX}/upload`, uploadRoutes);
+app.use(`${API_PREFIX}/orders`, orderRoutes);
 
 // Health check endpoint
 app.get(`${API_PREFIX}/health`, (req, res) => {

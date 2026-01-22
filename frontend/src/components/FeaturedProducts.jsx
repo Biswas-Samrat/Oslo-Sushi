@@ -1,50 +1,87 @@
-import React from 'react';
-import { ShoppingBag, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { ShoppingBag, ChevronRight, Check } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const products = [
     {
-        id: 1,
+        _id: "featured_1",
         name: "Oslo",
         description: "Salmón, atún, aguacate, brotes de soja, alga nori y sésamo. Normal (11,90€) / XL (14,90€)",
-        price: "€11.90",
+        price: 11.90, // Changed to number
+        displayPrice: "€11.90",
         image: "/product/Oslo_1.png",
         alignment: "left"
     },
     {
-        id: 2,
+        _id: "featured_2",
         name: "Skin",
         description: "Piel de salmón, queso crema, cebolla roja, teriyaki y cebollino",
-        price: "€10.00",
+        price: 10.00,
+        displayPrice: "€10.00",
         image: "/product/Skin_2.png",
         alignment: "right"
     },
     {
-        id: 3,
+        _id: "featured_3",
         name: "New York",
         description: "Salmón, aguacate, queso crema y sésamo blanco",
-        price: "€10.00",
+        price: 10.00,
+        displayPrice: "€10.00",
         image: "/product/New_York_4.png",
         alignment: "left"
     },
     {
-        id: 4,
+        _id: "featured_4",
         name: "Vegano",
         description: "Tomate deshidratado, pepino, aguacate y sésamo",
-        price: "€10.00",
+        price: 10.00,
+        displayPrice: "€10.00",
         image: "/product/Vegan_3.png",
         alignment: "right"
     }
 ];
+
+const FeaturedProductActions = ({ product }) => {
+    const { addToCart } = useCart();
+    const [isAdded, setIsAdded] = useState(false);
+    const navigate = useNavigate();
+
+    const handleAddToCart = () => {
+        addToCart(product);
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
+    };
+
+    return (
+        <div className={`flex flex-wrap gap-4 ${product.alignment === 'left' ? 'justify-center md:justify-start' : 'justify-center md:justify-end'
+            }`}>
+            <button
+                onClick={handleAddToCart}
+                className={`flex items-center gap-2 px-8 py-3 rounded-none transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${isAdded ? 'bg-green-600 hover:bg-green-700' : 'bg-[#ff4d00] hover:bg-[#e64600]'
+                    } text-white`}
+            >
+                <span className="uppercase tracking-wider font-semibold text-sm">
+                    {isAdded ? 'Added' : 'Add to Cart'}
+                </span>
+                {isAdded ? <Check size={18} /> : <ShoppingBag size={18} />}
+            </button>
+            <Link to="/order-online" className="flex items-center gap-2 border border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900 px-8 py-3 rounded-none transition-all duration-300">
+                <span className="uppercase tracking-wider font-semibold text-sm">Order Now</span>
+                <ChevronRight size={18} />
+            </Link>
+        </div>
+    );
+};
 
 const FeaturedProducts = () => {
     return (
         <section className="py-20 bg-[#faf9f6] overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                {products.map((product, index) => (
+                {products.map((product) => (
                     <div
-                        key={product.id}
+                        key={product._id}
                         className={`flex flex-col md:flex-row items-center justify-between mb-32 last:mb-0 ${product.alignment === 'right' ? 'md:flex-row-reverse' : ''
                             }`}
                     >
@@ -83,20 +120,10 @@ const FeaturedProducts = () => {
 
                             <div className={`flex items-center gap-6 mb-8 ${product.alignment === 'left' ? 'justify-center md:justify-start' : 'justify-center md:justify-end'
                                 }`}>
-                                <span className="text-4xl font-serif text-gray-900">{product.price}</span>
+                                <span className="text-4xl font-serif text-gray-900">{product.displayPrice}</span>
                             </div>
 
-                            <div className={`flex flex-wrap gap-4 ${product.alignment === 'left' ? 'justify-center md:justify-start' : 'justify-center md:justify-end'
-                                }`}>
-                                <button className="flex items-center gap-2 bg-[#ff4d00] hover:bg-[#e64600] text-white px-8 py-3 rounded-none transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-                                    <span className="uppercase tracking-wider font-semibold text-sm">Add to Cart</span>
-                                    <ShoppingBag size={18} />
-                                </button>
-                                <Link to="/order-online" className="flex items-center gap-2 border border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900 px-8 py-3 rounded-none transition-all duration-300">
-                                    <span className="uppercase tracking-wider font-semibold text-sm">Order Now</span>
-                                    <ChevronRight size={18} />
-                                </Link>
-                            </div>
+                            <FeaturedProductActions product={product} />
 
                         </div>
                     </div>

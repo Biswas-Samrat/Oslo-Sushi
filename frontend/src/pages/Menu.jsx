@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Helmet } from 'react-helmet';
-import { UtensilsCrossed, Star, Tag } from 'lucide-react';
+import { UtensilsCrossed, Star, Tag, ShoppingCart, Check } from 'lucide-react';
 import api from '../api/client';
 import { formatNZD } from '../utils/helpers';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 // Fallback data in case backend fails
 const FALLBACK_MENU_ITEMS = [
@@ -286,12 +288,28 @@ const Menu = () => {
     );
 };
 
+
+
 const MenuItemCard = ({ item }) => {
     const displayPrice = item.discount > 0 ? item.discountedPrice : item.price;
     const hasDiscount = item.discount > 0;
+    const navigate = useNavigate();
+    const { addToCart } = useCart();
+    const [isAdded, setIsAdded] = useState(false);
+
+    const handleOrderNow = () => {
+        navigate('/order-online');
+    };
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation();
+        addToCart(item);
+        setIsAdded(true);
+        setTimeout(() => setIsAdded(false), 2000);
+    };
 
     return (
-        <div className="card p-6 hover-lift bg-white">
+        <div className="card p-6 hover-lift bg-white flex flex-col h-full">
             {/* Badges */}
             <div className="flex flex-wrap gap-2 mb-3">
                 {item.localFavorite && (
@@ -313,21 +331,42 @@ const MenuItemCard = ({ item }) => {
 
             {/* Description */}
             {item.description && (
-                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed flex-grow">
                     {item.description}
                 </p>
             )}
 
-            {/* Price */}
-            <div className="flex items-center gap-2 mt-auto">
-                {hasDiscount && (
-                    <span className="text-gray-400 line-through text-sm">
-                        €{item.price.toFixed(2)}
+            {/* Price and Actions */}
+            <div className="mt-auto">
+                <div className="flex items-center gap-2 mb-4">
+                    {hasDiscount && (
+                        <span className="text-gray-400 line-through text-sm">
+                            €{item.price.toFixed(2)}
+                        </span>
+                    )}
+                    <span className="text-2xl font-bold text-primary-600">
+                        €{displayPrice ? displayPrice.toFixed(2) : '0.00'}
                     </span>
-                )}
-                <span className="text-2xl font-bold text-primary-600">
-                    €{displayPrice ? displayPrice.toFixed(2) : '0.00'}
-                </span>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleOrderNow}
+                        className="flex-1 btn-primary text-sm py-2"
+                    >
+                        Order Now
+                    </button>
+                    <button
+                        onClick={handleAddToCart}
+                        className={`p-2 rounded-lg transition-colors ${isAdded
+                            ? 'bg-green-100 text-green-600 hover:bg-green-200'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600'
+                            }`}
+                        title="Add to Cart"
+                    >
+                        {isAdded ? <Check size={20} /> : <ShoppingCart size={20} />}
+                    </button>
+                </div>
             </div>
         </div>
     );

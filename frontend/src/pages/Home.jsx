@@ -148,18 +148,21 @@ const Home = () => {
                 </div>
 
                 <div className="max-w-7xl mx-auto">
-                    <div className="relative h-[280px]"> {/* Set fixed height for container */}
-                        <AnimatePresence mode='popLayout'>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 absolute w-full">
-                                {getVisibleReviews().map((review) => (
-                                    <motion.div
+                    <div className="relative min-h-[280px] md:h-[280px]">
+                        <AnimatePresence mode='wait'>
+                            <motion.div
+                                key={currentReviewIndex}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.3 }}
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                            >
+                                {getVisibleReviews().map((review, index) => (
+                                    <div
                                         key={review.id}
-                                        layout
-                                        initial={{ opacity: 0, x: 50 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -50 }}
-                                        transition={{ duration: 0.5 }}
-                                        className="card p-6 flex flex-col h-full bg-white shadow-md hover:shadow-lg transition-shadow"
+                                        className={`card p-6 flex flex-col bg-white shadow-md hover:shadow-lg transition-shadow ${index > 0 ? 'hidden md:flex' : ''
+                                            } ${index > 1 ? 'lg:flex' : ''}`}
                                     >
                                         <div className="flex items-center mb-4">
                                             {[...Array(5)].map((_, i) => (
@@ -173,9 +176,9 @@ const Home = () => {
                                             <p className="font-semibold text-gray-900 text-sm">{review.name}</p>
                                             <p className="text-xs text-gray-500">{t('verifiedCustomer')}</p>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 ))}
-                            </div>
+                            </motion.div>
                         </AnimatePresence>
                     </div>
 
@@ -183,14 +186,14 @@ const Home = () => {
                         <div className="flex gap-4">
                             <button
                                 onClick={prevReview}
-                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
                                 aria-label="Previous reviews"
                             >
                                 <ChevronLeft size={24} className="text-gray-700" />
                             </button>
                             <button
                                 onClick={nextReview}
-                                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                                className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
                                 aria-label="Next reviews"
                             >
                                 <ChevronRight size={24} className="text-gray-700" />
